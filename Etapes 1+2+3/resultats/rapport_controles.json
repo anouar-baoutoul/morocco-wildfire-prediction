@@ -1,0 +1,36 @@
+{
+  "lignes_source": 22788,
+  "lignes_preparees": 22788,
+  "doublons_exacts_supprimes": 0,
+  "valeurs_manquantes": 0,
+  "dates_min_max": [
+    "2018-01-01",
+    "2025-12-31"
+  ],
+  "classes": {
+    "0": 14761,
+    "1": 8027
+  },
+  "controle_geographique": {
+    "centre_dans_contour": 22219,
+    "limite_a_verifier": 569
+  },
+  "lignes_meteo_retrouvees": 21106,
+  "couverture_fusion": 1.0,
+  "distance_grille_max_km": 12.473384026420256,
+  "sha256_source": "d9da9116b268b7c891a92c33cf7837e3bf91be3a087346bf86753bbe5474db7c",
+  "versions": {
+    "python": "3.12.14",
+    "pandas": "3.0.1",
+    "numpy": "2.3.5",
+    "shapely": "2.2.0",
+    "pyproj": "3.8.0"
+  },
+  "limites": [
+    "Export FIRMS/VIIRS brut et critères de qualité non fournis.",
+    "Construction des exemples feu=0 non documentée.",
+    "Points arrondis proches des limites à confirmer avec les coordonnées initiales.",
+    "Absence de surface brûlée : régression de superficie non réalisable avec cette table seule.",
+    "Météo du jour : ne pas utiliser comme information déjà connue au début de ce jour."
+  ]
+}

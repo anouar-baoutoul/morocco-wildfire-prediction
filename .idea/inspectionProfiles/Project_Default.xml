@@ -1,0 +1,20 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="python-multipart" />
+          <option value="python-dotenv" />
+          <option value="google-genai" />
+          <option value="sqlalchemy" />
+          <option value="pymysql" />
+          <option value="cryptography" />
+          <option value="passlib" />
+          <option value="bcrypt" />
+          <option value="python-jose" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
