@@ -73,6 +73,38 @@ La version actuelle du PDF utilise des textes retravaillés, des graphiques bleu
 
 La normalisation est **proposée et expliquée**, sans modifier le dataset : centrage-réduction lorsque le modèle le nécessite, transformation logarithmique envisagée pour les précipitations, division par 100 pour l’humidité et encodage cyclique pour le calendrier. La cible `feu` et les identifiants ne sont pas normalisés. Les paramètres appris devront être ajustés uniquement sur le jeu d’entraînement.
 
+## Archive initiale et travail à deux
+
+Le [premier ZIP des étapes 1, 2 et 3](archives/Projet_EMSI_Etapes_1_2_3.zip) est conservé comme copie de référence. Il contient le notebook exécuté, le script de préparation, les dépendances, les données et les résultats des contrôles. Il est distinct de l’archive justificative enrichie décrite plus haut.
+
+Pour travailler ensemble, modifiez les fichiers décompressés dans `Etapes 1+2+3`, plutôt que le ZIP. Ces fichiers sont déjà suivis par Git : leur ajout initial par l’interface GitHub ne bloque pas la collaboration.
+
+Chaque membre clone une fois le dépôt :
+
+```bash
+git clone https://github.com/anouar-baoutoul/morocco-wildfire-prediction.git
+cd morocco-wildfire-prediction
+git switch anouar-coding
+```
+
+Avant une modification, avec un dossier de travail propre, récupérer les changements et créer sa branche, par exemple :
+
+```bash
+git pull --ff-only origin anouar-coding
+git switch -c adam/ma-modification
+```
+
+Après modification, vérifier les fichiers puis enregistrer uniquement ceux concernés :
+
+```bash
+git status
+git add "chemin/du/fichier-modifie"
+git commit -m "Description de la modification"
+git push -u origin adam/ma-modification
+```
+
+Remplacer le chemin et le nom de branche par les siens ; Anouar peut utiliser `anouar/ma-modification`. Ouvrir ensuite une pull request vers `anouar-coding` pour intégrer le travail. Éviter de modifier en même temps le même notebook, car les conflits de notebooks sont plus difficiles à résoudre.
+
 ## Reproduire les résultats
 
 Pour la préparation, ouvrir un terminal dans `Etapes 1+2+3`, puis lancer :
