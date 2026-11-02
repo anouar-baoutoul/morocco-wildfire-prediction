@@ -1,145 +1,456 @@
 # Prédiction des feux de forêt au Maroc
 
-Projet réalisé par **Adam TALIBI et Anouar BAOUTOUL**, à l’EMSI, pour l’année 2026/2027.
+Projet réalisé par **Adam TALIBI et Anouar BAOUTOUL**, à l’**EMSI**, dans le cadre de l’année universitaire **2026/2027**.
 
-Nous étudions des observations de feux et les conditions météorologiques associées pour préparer un modèle de classification. L’estimation de la surface brûlée reste un objectif possible, mais nécessite une cible supplémentaire absente de notre base actuelle.
+## Présentation du projet
+
+L’objectif du projet est d’étudier des observations associées aux feux de forêt au Maroc ainsi que les conditions météorologiques correspondantes afin de préparer un modèle de **classification permettant de prédire la présence ou l’absence d’un feu**.
+
+L’estimation de la **surface brûlée** constitue également une piste d’évolution du projet. Cependant, cette partie nécessiterait une variable cible supplémentaire qui n’est pas disponible dans la base de données actuelle.
+
+---
 
 ## Données utilisées
 
-La base préparée contient **22 788 observations**, couvrant **2018 à 2025**, pour **1 232 coordonnées distinctes**. Elle comporte 17 colonnes : les 13 colonnes initiales et quatre informations de suivi (identifiant, origine météo, statut géographique et distance à la grille météo).
+La base de données préparée contient :
 
-La cible `feu` reprend les étiquettes du fichier fourni : 14 761 lignes codées `0` et 8 027 codées `1`. Ces proportions décrivent notre échantillon, pas le risque réel d’incendie au Maroc.
+- **22 788 observations**
+- Une période allant de **2018 à 2025**
+- **1 232 coordonnées géographiques distinctes**
+- **17 colonnes**
 
-## Les trois premières étapes
+Les 17 colonnes correspondent aux **13 variables initiales** ainsi qu’à quatre informations supplémentaires permettant d’assurer le suivi et la traçabilité des données :
 
-### 1. Collecte et complément des données météo
+- identifiant ;
+- origine des données météorologiques ;
+- statut géographique ;
+- distance par rapport à la grille météorologique.
 
-Nous sommes partis du CSV fourni pour le projet, dont la provenance des détections est déclarée NASA FIRMS. L’export satellitaire brut n’étant pas disponible, aucun nouveau téléchargement FIRMS n’est présenté comme réalisé.
+### Variable cible
 
-La météo était incomplète sur **21 106 lignes**. Nous avons récupéré les données historiques correspondantes auprès d’Open-Meteo, en utilisant la latitude, la longitude et la date : température maximale, précipitations, vent maximal et humidité relative moyenne. L’humidité est calculée à partir des 24 valeurs horaires UTC.
+La variable cible utilisée pour la classification est :
 
-Les valeurs déjà présentes ont été conservées. Une comparaison sur 24 observations initialement complètes, réparties entre 2018 et 2025, a confirmé la concordance des six valeurs météo et de grille comparées avec la configuration testée. Les URL et les réponses de récupération ont été archivées pour conserver la provenance.
-
-### 2. Nettoyage et contrôle
-
-Avec **Pandas et NumPy**, nous avons vérifié les types, les dates, les valeurs manquantes, les doublons et la cohérence des mesures. Aucun doublon exact n’a été trouvé et aucune valeur n’a été remplacée arbitrairement par une moyenne.
-
-**Shapely** a servi à vérifier les coordonnées par rapport au contour de référence. **PyProj** a permis de calculer les distances aux centres de grille météo.
-
-Résultats :
-
-- 22 788 lignes conservées et aucune valeur manquante dans le fichier préparé ;
-- 22 219 observations dont le centre est dans le contour ;
-- 569 observations, réparties sur 34 coordonnées, signalées en bordure et conservées pour vérification.
-
-Les coordonnées sont arrondies à 0,1°. Le recoupement de leurs cellules d’arrondi avec le contour est compatible avec cette imprécision, mais ne certifie pas la position originale des détections.
-
-### 3. Association et contrôle de la fusion
-
-Les données météo récupérées ont été associées aux coordonnées et à la date de chaque ligne. La préparation sépare ensuite la table enrichie en deux tables — observations et météo — avant de vérifier leur jointure exacte sur latitude, longitude et date.
-
-La jointure est contrôlée en **un-à-un**, avec une couverture de **100 %**, sans multiplication des lignes ni modification des valeurs sources. Cette séparation puis fusion est un contrôle de cohérence de la table enrichie ; elle ne remplace pas une validation à partir d’un export satellitaire brut.
-
-Les fichiers de ces étapes sont accessibles dans [Etapes 1+2+3](Etapes%201%2B2%2B3/), avec un [README détaillé](Etapes%201%2B2%2B3/README.md).
-
-## Contenu du dossier justificatif des trois étapes
-
-L’archive remise séparément, `Dossier_Justificatif_EMSI_3_Etapes.zip`, regroupe les éléments suivants. Cette liste décrit l’archive complète ; tous ses fichiers ne sont pas nécessairement décompressés dans ce dépôt.
-
-- **Rapport et recherches** : bilan des trois étapes, limites, liens des sources et explication des choix techniques.
-- **Données** : CSV initial incomplet, CSV complété, fichier préparé et provenance détaillée de la récupération météo.
-- **Codes** : script de récupération, script de préparation et notebook exécuté avec ses résultats.
-- **Preuves de récupération** : 6 212 réponses API mises en cache, contrôles de concordance et état final de récupération.
-- **Résultats de nettoyage et de fusion** : tables observations/météo, points en bordure et rapport de contrôles.
-- **Reproductibilité** : journaux d’exécution, vérification de conservation des valeurs et manifeste SHA-256 des fichiers.
-- **Carte** : représentation des 1 232 lieux étudiés, avec signalement des points en bordure.
-
-La préparation a été réexécutée et la récupération a été rejouée depuis le cache, sans nouvelles requêtes : les données complétées obtenues étaient identiques à celles du dossier.
-
-## Ajout : analyse univariée
-
-Le [ZIP de l’analyse univariée](Analyse_univariee/Analyse_Univariee_EMSI.zip) contient :
-
-- un **rapport PDF de 18 pages**, avec une introduction et une fiche pour chacune des 17 variables ;
-- le script Python permettant de reproduire les calculs et le rapport ;
-- les statistiques et tableaux de fréquences au format CSV ;
-- le dataset préparé utilisé pour l’analyse et un guide de reproduction.
-
-Le premier rendu porte en détail sur **la température maximale**, variable numérique, et **la présence de feu**, variable qualitative. L’analyse est ensuite étendue aux autres colonnes en distinguant mesures, catégories, dates et identifiants.
-
-Pour chaque variable, nous présentons les mesures adaptées, leur interprétation, le choix d’une éventuelle normalisation et une visualisation. Les graphiques retenus sont les histogrammes, les boîtes à moustaches et les diagrammes en barres. Les dates sont décrites par leurs effectifs annuels.
-
-La version actuelle du PDF utilise des textes retravaillés, des graphiques bleus sur fond blanc et des axes noirs. La ligne nominative répétée en pied de page a été supprimée. Ces modifications de présentation ne changent pas les données ni les calculs.
-
-La normalisation est **proposée et expliquée**, sans modifier le dataset : centrage-réduction lorsque le modèle le nécessite, transformation logarithmique envisagée pour les précipitations, division par 100 pour l’humidité et encodage cyclique pour le calendrier. La cible `feu` et les identifiants ne sont pas normalisés. Les paramètres appris devront être ajustés uniquement sur le jeu d’entraînement.
-
-## Archive initiale et travail à deux
-
-Le [premier ZIP des étapes 1, 2 et 3](archives/Projet_EMSI_Etapes_1_2_3.zip) est conservé comme copie de référence. Il contient le notebook exécuté, le script de préparation, les dépendances, les données et les résultats des contrôles. Il est distinct de l’archive justificative enrichie décrite plus haut.
-
-Pour travailler ensemble, modifiez les fichiers décompressés dans `Etapes 1+2+3`, plutôt que le ZIP. Ces fichiers sont déjà suivis par Git : leur ajout initial par l’interface GitHub ne bloque pas la collaboration.
-
-Chaque membre clone une fois le dépôt :
-
-```bash
-git clone https://github.com/anouar-baoutoul/morocco-wildfire-prediction.git
-cd morocco-wildfire-prediction
-git switch anouar-coding
+```text
+feu
 ```
 
-Avant une modification, avec un dossier de travail propre, récupérer les changements et créer sa branche, par exemple :
+Répartition des observations :
 
-```bash
-git pull --ff-only origin anouar-coding
-git switch -c adam/ma-modification
+- `feu = 0` : **14 761 observations**
+- `feu = 1` : **8 027 observations**
+
+Ces proportions représentent uniquement la distribution de **notre échantillon de données**. Elles ne doivent pas être interprétées comme la probabilité réelle d’apparition d’un incendie au Maroc.
+
+---
+
+# Les trois premières étapes
+
+## 1. Collecte et complément des données météorologiques
+
+Le projet démarre à partir du fichier CSV fourni.
+
+La provenance des détections présentes dans ce fichier est déclarée comme provenant de **NASA FIRMS**.
+
+Cependant, l’export satellitaire brut d’origine n’étant pas disponible, nous ne présentons pas de nouveau téléchargement FIRMS comme ayant été effectué.
+
+### Complément des données météo
+
+Les informations météorologiques étaient incomplètes pour :
+
+**21 106 observations**
+
+Les données historiques manquantes ont été récupérées depuis l’API **Open-Meteo Historical Weather** à partir de :
+
+- la latitude ;
+- la longitude ;
+- la date.
+
+Les variables météorologiques récupérées sont notamment :
+
+- température maximale ;
+- précipitations ;
+- vitesse maximale du vent ;
+- humidité relative moyenne.
+
+L’humidité relative moyenne est calculée à partir des **24 valeurs horaires UTC de la journée**.
+
+Les valeurs météorologiques déjà présentes dans le fichier d’origine ont été conservées.
+
+### Contrôle de concordance
+
+Une vérification a été réalisée sur **24 observations initialement complètes**, réparties entre **2018 et 2025**.
+
+Cette vérification a permis de confirmer la concordance des **six valeurs météorologiques et de grille comparées** avec la configuration utilisée.
+
+Pour assurer la traçabilité :
+
+- les URL des requêtes ont été conservées ;
+- les réponses de récupération ont été archivées ;
+- les données déjà existantes n’ont pas été remplacées inutilement.
+
+---
+
+## 2. Nettoyage et contrôle des données
+
+Le nettoyage des données a principalement été réalisé avec :
+
+- **Pandas**
+- **NumPy**
+- **Shapely**
+- **PyProj**
+
+### Contrôles effectués
+
+Les vérifications ont porté sur :
+
+- les types de données ;
+- les dates ;
+- les valeurs manquantes ;
+- les doublons ;
+- la cohérence des mesures ;
+- la cohérence géographique.
+
+Aucun doublon exact n’a été identifié.
+
+Aucune valeur manquante n’a été remplacée arbitrairement par une moyenne.
+
+### Vérification géographique
+
+La bibliothèque **Shapely** a été utilisée pour vérifier la position des coordonnées par rapport au contour géographique de référence du Maroc.
+
+**PyProj** a été utilisé pour calculer les distances entre les observations et les centres des grilles météorologiques.
+
+### Résultats
+
+Après préparation :
+
+- **22 788 lignes** sont conservées ;
+- aucune valeur manquante ne subsiste dans le fichier préparé ;
+- **22 219 observations** ont leur centre situé dans le contour de référence ;
+- **569 observations** sont signalées en bordure ;
+- ces 569 observations correspondent à **34 coordonnées distinctes**.
+
+Les observations situées en bordure ont été conservées afin de permettre une vérification ultérieure.
+
+### Précision des coordonnées
+
+Les coordonnées sont arrondies à :
+
+**0,1°**
+
+Le recoupement entre les cellules obtenues par cet arrondi et le contour géographique est compatible avec cette précision.
+
+Cette vérification ne permet toutefois pas de certifier la position géographique exacte des détections satellitaires originales.
+
+---
+
+## 3. Association et contrôle de la fusion
+
+Les données météorologiques récupérées ont été associées aux observations à partir de trois clés :
+
+```text
+latitude
+longitude
+date
 ```
 
-Après modification, vérifier les fichiers puis enregistrer uniquement ceux concernés :
+Afin de contrôler correctement l’opération, la table enrichie est séparée en deux tables :
 
-```bash
-git status
-git add "chemin/du/fichier-modifie"
-git commit -m "Description de la modification"
-git push -u origin adam/ma-modification
+1. une table contenant les observations ;
+2. une table contenant les informations météorologiques.
+
+Les deux tables sont ensuite fusionnées de nouveau à l’aide des mêmes clés.
+
+### Contrôles de la jointure
+
+La jointure est contrôlée en relation :
+
+**un-à-un**
+
+Les résultats obtenus sont :
+
+- couverture de la jointure : **100 %** ;
+- aucune multiplication du nombre de lignes ;
+- aucune perte d’observation ;
+- aucune modification des valeurs sources.
+
+Cette séparation puis cette nouvelle fusion constituent un **contrôle de cohérence de la table enrichie**.
+
+Elle ne remplace cependant pas une validation indépendante utilisant directement l’export satellitaire brut original.
+
+---
+
+# Organisation du projet
+
+La structure principale du dépôt est la suivante :
+
+```text
+morocco-wildfire-prediction/
+│
+├── Etapes 1+2+3/
+│   ├── data/
+│   ├── results/
+│   ├── 01_Collecte_Nettoyage_Fusion.ipynb
+│   ├── 02_Feature_Engineering_et_Split.ipynb
+│   ├── 03_Modelisation.ipynb
+│   ├── preparer_donnees.py
+│   ├── tester_prediction.py
+│   ├── README.md
+│   └── requirements.txt
+│
+├── README.md
+├── pyproject.toml
+├── uv.lock
+└── .gitignore
 ```
 
-Remplacer le chemin et le nom de branche par les siens ; Anouar peut utiliser `anouar/ma-modification`. Ouvrir ensuite une pull request vers `anouar-coding` pour intégrer le travail. Éviter de modifier en même temps le même notebook, car les conflits de notebooks sont plus difficiles à résoudre.
+Les fichiers correspondant aux trois premières étapes sont accessibles dans :
 
-## Reproduire les résultats
+[Etapes 1+2+3](Etapes%201%2B2%2B3/)
 
-Pour la préparation, ouvrir un terminal dans `Etapes 1+2+3`, puis lancer :
+Un README plus détaillé est également disponible dans :
 
-```bash
-python -m pip install -r requirements.txt
-python preparer_donnees.py
+[README des étapes 1+2+3](Etapes%201%2B2%2B3/README.md)
+
+---
+
+# Dossier justificatif des trois étapes
+
+Une archive complémentaire est remise séparément :
+
+```text
+Dossier_Justificatif_EMSI_3_Etapes.zip
 ```
 
-Les données nécessaires à cette préparation sont dans le sous-dossier `data`. Le notebook `01_Collecte_Nettoyage_Fusion.ipynb` contient aussi les sorties enregistrées.
+Cette archive regroupe les éléments permettant de justifier les traitements réalisés.
 
-Pour l’analyse univariée, extraire son ZIP et ouvrir un terminal dans le dossier extrait :
+> Tous les fichiers de cette archive ne sont pas nécessairement décompressés directement dans le dépôt Git.
 
-```bash
-python -m pip install pandas numpy reportlab
-python analyse_univariee.py
+Elle contient notamment les éléments suivants.
+
+### Rapport et recherches
+
+- synthèse des trois premières étapes ;
+- description des limites ;
+- liens vers les sources ;
+- explication des choix techniques.
+
+### Données
+
+- CSV initial incomplet ;
+- CSV complété ;
+- fichier préparé ;
+- informations détaillées sur la provenance des données météorologiques.
+
+### Codes
+
+- script de récupération ;
+- script de préparation ;
+- notebooks exécutés ;
+- résultats obtenus.
+
+### Preuves de récupération
+
+L’archive contient notamment :
+
+**6 212 réponses API mises en cache**
+
+Elle comprend également :
+
+- les contrôles de concordance ;
+- l’état final de récupération ;
+- les informations permettant de vérifier la provenance des données.
+
+### Résultats de nettoyage et de fusion
+
+- tables d’observations ;
+- tables météorologiques ;
+- points identifiés en bordure ;
+- rapports de contrôle.
+
+### Reproductibilité
+
+Le dossier comprend également :
+
+- les journaux d’exécution ;
+- les vérifications de conservation des valeurs ;
+- un manifeste **SHA-256** des fichiers.
+
+### Carte
+
+Une carte représente les :
+
+**1 232 lieux étudiés**
+
+Elle permet également d’identifier les points signalés en bordure du contour géographique.
+
+---
+
+# Reproductibilité
+
+La préparation des données a été réexécutée.
+
+La récupération météorologique a également été rejouée à partir du **cache local**, sans effectuer de nouvelles requêtes vers l’API.
+
+Les données complétées obtenues sont identiques à celles présentes dans le dossier justificatif.
+
+Cette démarche permet d’améliorer :
+
+- la reproductibilité ;
+- la traçabilité ;
+- la vérification des traitements réalisés.
+
+---
+
+# Technologies utilisées
+
+Le projet utilise principalement :
+
+```text
+Python
+Pandas
+NumPy
+Matplotlib
+Scikit-learn
+Shapely
+PyProj
+Jupyter Notebook
 ```
 
-Le dataset doit rester à côté du script. La version actuelle du générateur PDF utilise les polices Calibri et Georgia de Windows, dans `C:/Windows/Fonts` ; adapter leurs chemins pour un autre système.
+Les données météorologiques historiques sont obtenues grâce à :
 
-Le dépôt contient également des notebooks de préparation des variables, de modélisation et de test de prédiction. Le présent bilan documente les trois premières étapes et le nouveau rendu univarié ; il ne constitue pas une validation des résultats de ces autres notebooks.
+**Open-Meteo Historical Weather API**
 
-## Points à approfondir
+Le contrôle géographique utilise un contour du Maroc provenant de :
 
-- Documenter le capteur, les filtres de qualité et la construction des exemples `feu=0` à partir de la source initiale.
-- Vérifier le caractère forestier des détections avec des données d’occupation du sol.
-- Définir un horizon de prévision : les maxima météo d’une journée ne sont pas connus au début de cette journée.
-- Reconstituer de vraies séries quotidiennes avant de calculer des indicateurs sur les sept jours précédents.
-- Utiliser une séparation temporelle et, si possible, une évaluation spatiale.
-- Ajouter une mesure de surface brûlée pour réaliser la régression prévue dans le sujet.
+**geoBoundaries**
 
-## Sources et attribution
+La provenance déclarée des observations d’incendies est :
 
-- [NASA FIRMS : données par pays](https://firms.modaps.eosdis.nasa.gov/country/) et [description des attributs VIIRS](https://firms.modaps.eosdis.nasa.gov/content/descriptions/FIRMS_VIIRS_Firehotspots.html).
-- [Open-Meteo : archive météorologique historique](https://open-meteo.com/en/docs/historical-weather-api), données attribuées à Open-Meteo sous CC BY 4.0 ; consulter les [conditions d’utilisation](https://open-meteo.com/en/terms) pour toute nouvelle collecte.
-- [geoBoundaries : métadonnées MAR ADM0](https://www.geoboundaries.org/api/current/gbOpen/MAR/ADM0/), contour figé à la version `9469f09`, identifiant `MAR-ADM0-5654995`, source OpenStreetMap/Wambacher. La couche utilisée indique la licence [ODbL 1.0](https://www.openstreetmap.org/copyright).
+**NASA FIRMS**
 
-Le contour sert de référence technique au contrôle géographique.
+---
+
+# Points à approfondir
+
+Plusieurs améliorations pourront être apportées dans les prochaines étapes du projet.
+
+## Provenance des observations
+
+Documenter plus précisément :
+
+- le capteur satellitaire utilisé ;
+- les filtres de qualité appliqués ;
+- la méthode utilisée pour construire les observations `feu = 0`.
+
+## Vérification des zones forestières
+
+Croiser les détections avec des données d’occupation du sol afin de vérifier que les observations correspondent réellement à des zones forestières ou végétalisées.
+
+## Horizon de prévision
+
+Définir précisément à quel moment la prédiction doit être réalisée.
+
+En effet, certaines variables, comme la **température maximale de la journée**, ne sont pas connues au début de cette même journée.
+
+Une véritable prédiction opérationnelle devra donc utiliser uniquement des variables disponibles au moment où la prévision est effectuée.
+
+## Séries temporelles
+
+Reconstituer de véritables séries météorologiques quotidiennes avant de calculer des indicateurs tels que :
+
+- pluie cumulée sur 7 jours ;
+- température moyenne des jours précédents ;
+- vent moyen ;
+- humidité moyenne ;
+- nombre de jours sans pluie.
+
+## Séparation des données
+
+Pour éviter les fuites d’information entre les données d’entraînement et de test, il sera préférable d’utiliser :
+
+- une séparation temporelle ;
+- et, si possible, une évaluation spatiale.
+
+## Régression de la surface brûlée
+
+Ajouter une variable représentant la **surface brûlée** afin de permettre la réalisation de la partie régression prévue dans le sujet.
+
+---
+
+# Sources et attribution
+
+## NASA FIRMS
+
+NASA FIRMS permet d’accéder aux informations relatives aux détections satellitaires de feux actifs.
+
+- [NASA FIRMS — données par pays](https://firms.modaps.eosdis.nasa.gov/country/)
+- [Description des attributs VIIRS FIRMS](https://firms.modaps.eosdis.nasa.gov/content/descriptions/FIRMS_VIIRS_Firehotspots.html)
+
+## Open-Meteo
+
+Les données météorologiques historiques utilisées pour compléter la base proviennent de l’API Open-Meteo.
+
+- [Open-Meteo Historical Weather API](https://open-meteo.com/en/docs/historical-weather-api)
+- [Conditions d’utilisation Open-Meteo](https://open-meteo.com/en/terms)
+
+Les données sont attribuées à **Open-Meteo** conformément aux conditions applicables.
+
+## geoBoundaries
+
+Le contour géographique utilisé pour les vérifications correspond à la couche :
+
+```text
+MAR ADM0
+```
+
+Version utilisée :
+
+```text
+9469f09
+```
+
+Identifiant :
+
+```text
+MAR-ADM0-5654995
+```
+
+Source déclarée :
+
+```text
+OpenStreetMap / Wambacher
+```
+
+Référence :
+
+- [geoBoundaries — Maroc ADM0](https://www.geoboundaries.org/api/current/gbOpen/MAR/ADM0/)
+- [Licence OpenStreetMap / ODbL](https://www.openstreetmap.org/copyright)
+
+Le contour est utilisé uniquement comme **référence technique pour le contrôle géographique**.
+
+---
+
+# Auteurs
+
+**Adam TALIBI**  
+**Anouar BAOUTOUL**
+
+**EMSI — 2026/2027**
+
+---
+
+## État actuel du projet
+
+Les étapes suivantes sont réalisées :
+
+- ✅ collecte et complément des données ;
+- ✅ nettoyage des données ;
+- ✅ contrôle géographique ;
+- ✅ association météo / observations ;
+- ✅ contrôle de la fusion ;
+- ✅ préparation du dataset ;
+- ✅ feature engineering et séparation des données ;
+- ✅ préparation de la modélisation.
+
+La suite du projet porte principalement sur la **modélisation, l’évaluation et l’amélioration des performances de prédiction des feux de forêt**.
