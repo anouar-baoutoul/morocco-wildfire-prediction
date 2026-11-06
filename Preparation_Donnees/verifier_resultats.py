@@ -52,7 +52,8 @@ def verifier(out: Path = pc.OUT) -> dict:
     cellules_executees = 0
     if notebook.exists():
         nb = json.loads(notebook.read_text(encoding="utf-8"))
-        codes = [c for c in nb["cells"] if c["cell_type"] == "code"]
+        codes = [c for c in nb["cells"]
+                 if c["cell_type"] == "code" and "".join(c.get("source", [])).strip()]
         assert all(c.get("execution_count") is not None for c in codes), "Notebook non exécuté intégralement"
         assert not any(o.get("output_type") == "error" for c in codes for o in c.get("outputs", []))
         cellules_executees = len(codes)
