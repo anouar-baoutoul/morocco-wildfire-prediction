@@ -1,0 +1,5 @@
+﻿saison,saison_automne,saison_hiver,saison_printemps,saison_été
+hiver,0.0,1.0,0.0,0.0
+printemps,0.0,0.0,1.0,0.0
+été,0.0,0.0,0.0,1.0
+automne,1.0,0.0,0.0,0.0

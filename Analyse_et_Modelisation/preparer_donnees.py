@@ -46,7 +46,7 @@ assert raw.lat_c.between(-90,90).all() and raw.lon_c.between(-180,180).all()
 assert raw.lat_grille.between(-90,90).all() and raw.lon_grille.between(-180,180).all()
 assert raw.date.eq(raw.acq_date).all(), 'Dates incendie/météo non concordantes.'
 assert raw.mois.eq(raw.acq_date.dt.month).all()
-assert raw.jour_annee.eq(raw.acq_date.dt.dayofyear).all()
+assert raw.jour_annee.eq(raw.acq_date.dt.day_of_year).all()
 assert raw.humidite_moy.between(0,100).all()
 assert raw.precipitation_sum.ge(0).all() and raw.wind_speed_10m_max.ge(0).all()
 assert raw.temperature_2m_max.gt(-273.15).all()

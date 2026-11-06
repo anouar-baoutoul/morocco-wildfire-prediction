@@ -1,0 +1,6 @@
+﻿exemple,partie,lignes,proportion_feu_1
+80_20_stratifie_train_uniquement,80%,14323,0.3531383090134748
+80_20_stratifie_train_uniquement,20%,3581,0.3529740296006702
+kfold_stratifie_interne_1,controle,5968,0.3532171581769437
+kfold_stratifie_interne_2,controle,5968,0.3530495978552279
+kfold_stratifie_interne_3,controle,5968,0.3530495978552279

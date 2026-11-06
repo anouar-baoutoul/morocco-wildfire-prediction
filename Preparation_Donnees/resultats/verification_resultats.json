@@ -1,0 +1,13 @@
+{
+  "statut": "OK",
+  "lignes_verifiees": {
+    "test": 2510,
+    "train": 17904,
+    "validation": 2374
+  },
+  "matrices_et_cibles_alignees": true,
+  "inference_brute_et_exports_identiques": true,
+  "ordre_colonnes_indifferent": true,
+  "source_inchangee": true,
+  "cellules_notebook_executees_sans_erreur": 12
+}

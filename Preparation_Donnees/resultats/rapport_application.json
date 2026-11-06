@@ -1,0 +1,125 @@
+{
+  "source": "C:\\Users\\anoir\\Desktop\\morocco-wildfire-prediction\\Analyse_et_Modelisation\\data\\dataset_feux_meteo_complete.csv",
+  "sha256_source": "d9da9116b268b7c891a92c33cf7837e3bf91be3a087346bf86753bbe5474db7c",
+  "lignes_source": 22788,
+  "lignes_nettoyees": 22788,
+  "doublons_exacts_retires": 0,
+  "manquants_reels": {
+    "id_observation": 0,
+    "lat_c": 0,
+    "lon_c": 0,
+    "acq_date": 0,
+    "feu": 0,
+    "mois": 0,
+    "jour_annee": 0,
+    "date": 0,
+    "temperature_2m_max": 0,
+    "precipitation_sum": 0,
+    "wind_speed_10m_max": 0,
+    "humidite_moy": 0,
+    "lat_grille": 0,
+    "lon_grille": 0
+  },
+  "controles": {
+    "cible_binaire": true,
+    "dates_identiques": true,
+    "mois_coherent": true,
+    "jour_coherent": true,
+    "latitude_valide": true,
+    "longitude_valide": true,
+    "latitude_grille_valide": true,
+    "longitude_grille_valide": true,
+    "humidite_valide": true,
+    "pluie_valide": true,
+    "vent_valide": true,
+    "temperature_valide": true
+  },
+  "valeurs_extremes_reelles_supprimees": 0,
+  "repartition": [
+    {
+      "ensemble": "train",
+      "lignes": 17904,
+      "debut": "2018-01-01",
+      "fin": "2023-12-31",
+      "feu_0": 11582,
+      "feu_1": 6322,
+      "proportion_feu_1": 0.35310545129579984
+    },
+    {
+      "ensemble": "validation",
+      "lignes": 2374,
+      "debut": "2024-01-01",
+      "fin": "2024-12-31",
+      "feu_0": 1550,
+      "feu_1": 824,
+      "proportion_feu_1": 0.34709351305812974
+    },
+    {
+      "ensemble": "test",
+      "lignes": 2510,
+      "debut": "2025-01-01",
+      "fin": "2025-12-31",
+      "feu_0": 1629,
+      "feu_1": 881,
+      "proportion_feu_1": 0.35099601593625496
+    }
+  ],
+  "configuration_choisie_sur_2024": "standard_log1p_pluie",
+  "critere_selection": "average_precision validation, puis ROC-AUC en cas d'égalité",
+  "seuil_prediction_fixe": 0.5,
+  "evaluation_test_2025": {
+    "roc_auc": 0.5860889705528833,
+    "average_precision": 0.41174896534325434,
+    "balanced_accuracy": 0.5640302853571302,
+    "precision": 0.40390173410404623,
+    "rappel": 0.6345062429057888,
+    "f1": 0.493598233995585
+  },
+  "nombre_variables_apres_preparation": 11,
+  "entrees_brutes_pipeline": [
+    "lat_c",
+    "lon_c",
+    "acq_date",
+    "temperature_2m_max",
+    "precipitation_sum",
+    "wind_speed_10m_max",
+    "humidite_moy"
+  ],
+  "variables_modele": [
+    "num__lat_c",
+    "num__lon_c",
+    "num__temperature_2m_max",
+    "num__precipitation_sum",
+    "num__wind_speed_10m_max",
+    "num__humidite_moy",
+    "num__jour_sin",
+    "num__jour_cos",
+    "cat__saison_ete",
+    "cat__saison_hiver",
+    "cat__saison_printemps"
+  ],
+  "parametres_appris_sur": "2018-2023 uniquement, sans réentraînement sur 2024",
+  "controles_execution": [
+    "ensembles chronologiques et disjoints",
+    "médianes égales au train seul",
+    "exports finis",
+    "pipeline sauvegardé/rechargé : prédictions identiques",
+    "transform d'une entrée future avec NaN : paramètres inchangés"
+  ],
+  "versions": {
+    "python": "3.13.14",
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "sklearn": "1.9.1",
+    "matplotlib": "3.11.2",
+    "joblib": "1.6.0"
+  },
+  "limites": [
+    "Association rétrospective avec météo observée du même jour, pas une prévision J+1.",
+    "Origine des exemples feu=0 et export FIRMS brut à documenter.",
+    "Caractère forestier et localisation exacte non certifiés par cette table.",
+    "Lieux déjà présents en entraînement possibles en test : nouveaux lieux non évalués.",
+    "Probabilités non calibrées sur la prévalence réelle dans la population.",
+    "Comparaisons sur des absences simulées, sans conclusion sur le mécanisme réel de collecte."
+  ]
+}

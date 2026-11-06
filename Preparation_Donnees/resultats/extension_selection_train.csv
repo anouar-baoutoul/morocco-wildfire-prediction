@@ -1,0 +1,12 @@
+﻿variable,score_F,retenue_demo
+num__precipitation_sum,266.8442093561429,True
+num__humidite_moy,226.2275571705085,True
+num__temperature_2m_max,71.93474620765974,True
+num__wind_speed_10m_max,3.5997874249424684,True
+num__lon_c,3.5341641945715403,True
+num__lat_c,0.30251969786026517,True
+cat__saison_ete,0.2948433842836503,False
+num__jour_cos,0.09775810561670628,False
+cat__saison_printemps,0.06152515003710622,False
+num__jour_sin,0.0061046590016247985,False
+cat__saison_hiver,0.005162783454166733,False

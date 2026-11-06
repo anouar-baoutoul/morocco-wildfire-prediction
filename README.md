@@ -143,34 +143,41 @@ Résultats :
 
 ```text
 morocco-wildfire-prediction/
-│
-├── Etapes 1+2+3/
-│   │
+├── Analyse_et_Modelisation/
 │   ├── data/
-│   ├── results/
-│   │
+│   ├── resultats/
 │   ├── 01_Collecte_Nettoyage_Fusion.ipynb
 │   ├── 02_Feature_Engineering_et_Split.ipynb
 │   ├── 03_Modelisation.ipynb
-│   │
+│   ├── 04_Preparation_Donnees.ipynb
 │   ├── preparer_donnees.py
-│   ├── tester_prediction.py
+│   ├── tester_prediction.py.ipynb
 │   ├── requirements.txt
 │   └── README.md
-│
+├── Preparation_Donnees/
+│   ├── resultats/
+│   ├── pipeline_pretraitement.py
+│   ├── comparaisons.py
+│   ├── aberrants.py
+│   ├── construire_notebook.py
+│   ├── executer_notebook.py
+│   ├── verifier_resultats.py
+│   ├── GUIDE_PRETRAITEMENT.md
+│   └── README.md
 ├── README.md
 ├── pyproject.toml
 ├── uv.lock
 └── .gitignore
 ```
 
-Les fichiers détaillés des trois premières étapes sont disponibles dans :
+[Analyse_et_Modelisation](Analyse_et_Modelisation/) regroupe les quatre notebooks principaux,
+les sources et les premiers résultats.
 
-[Etapes 1+2+3](Etapes%201%2B2%2B3/)
+[Preparation_Donnees](Preparation_Donnees/README.md) contient les scripts de prétraitement,
+le guide des choix méthodologiques et le pipeline complet reproductible.
 
-Un README complémentaire est disponible ici :
-
-[README des étapes 1+2+3](Etapes%201%2B2%2B3/README.md)
+Le [guide de prétraitement](Preparation_Donnees/GUIDE_PRETRAITEMENT.md) détaille les méthodes,
+les comparaisons et les limites des données.
 
 ---
 
@@ -193,26 +200,24 @@ Une attention particulière doit être portée au risque de **data leakage**.
 
 # 🤖 Modélisation
 
-La partie modélisation est développée dans :
+Le [notebook de préparation](Analyse_et_Modelisation/04_Preparation_Donnees.ipynb)
+contient un workflow complet : contrôle des données, comparaisons des imputations,
+valeurs atypiques, mise à l'échelle, encodage, entraînement et évaluation.
 
-```text
-03_Modelisation.ipynb
-```
+Le protocole utilise **2018–2023 pour l'entraînement, 2024 pour la validation et 2025 pour le test**.
+Les transformations sont ajustées sur l'entraînement uniquement. Une régression logistique
+sert à comparer les prétraitements sur la validation, avant l'évaluation finale sur le test.
 
-L’objectif est de comparer plusieurs algorithmes de classification afin de prédire la variable :
+Le fichier `Preparation_Donnees/resultats/pipeline_complet.joblib` réunit les transformations
+et le modèle retenus pour recevoir directement les entrées brutes.
 
-```text
-feu
-```
+Les premières comparaisons de modèles restent disponibles dans
+[03_Modelisation.ipynb](Analyse_et_Modelisation/03_Modelisation.ipynb).
+Le [README du prétraitement](Preparation_Donnees/README.md) explique les précautions
+concernant la réutilisation de ses anciens fichiers de modèle et de scaler.
 
-Les modèles peuvent notamment être évalués à partir de métriques comme :
-
-- Accuracy ;
-- Precision ;
-- Recall ;
-- F1-score ;
-- ROC-AUC ;
-- matrice de confusion.
+Les métriques comprennent précision, rappel, F1, balanced accuracy, ROC-AUC,
+average precision et matrice de confusion.
 
 ---
 
@@ -299,41 +304,41 @@ Le projet utilise principalement :
 
 # ⚙️ Installation
 
-Cloner le dépôt :
+Cloner le dépôt puis entrer dans le dossier :
 
 ```bash
 git clone https://github.com/anouar-baoutoul/morocco-wildfire-prediction.git
-```
-
-Entrer dans le dossier :
-
-```bash
 cd morocco-wildfire-prediction
 ```
 
-Installer les dépendances :
+Installer l'environnement déclaré par `pyproject.toml` et `uv.lock` :
 
 ```bash
-pip install -r "Etapes 1+2+3/requirements.txt"
+uv sync --locked
 ```
+
+Le projet utilise Python 3.13 ou une version compatible avec la contrainte déclarée.
 
 ---
 
 # 🚀 Utilisation
 
-Les notebooks peuvent être exécutés dans l’ordre suivant :
+Commencer par [04_Preparation_Donnees.ipynb](Analyse_et_Modelisation/04_Preparation_Donnees.ipynb),
+sélectionner l'environnement `.venv` du projet et exécuter les cellules dans l'ordre.
+Ce notebook est autonome et ses sorties sont déjà enregistrées.
 
-```text
-1 → 01_Collecte_Nettoyage_Fusion.ipynb
-2 → 02_Feature_Engineering_et_Split.ipynb
-3 → 03_Modelisation.ipynb
+Depuis la racine du dépôt, le même traitement se lance en script :
+
+```bash
+uv run python Preparation_Donnees/pipeline_pretraitement.py
+uv run python Preparation_Donnees/verifier_resultats.py
 ```
 
-Le script principal de préparation est :
+Les notebooks `01`, `02` et `03` documentent les premiers traitements de collecte,
+construction des variables et comparaison des modèles. Leur documentation est disponible
+dans [Analyse_et_Modelisation/README.md](Analyse_et_Modelisation/README.md).
 
-```text
-preparer_donnees.py
-```
+Les résultats du workflow complet sont enregistrés dans `Preparation_Donnees/resultats/`.
 
 ---
 

@@ -1,0 +1,4 @@
+﻿methode,n_train_total,n_echantillon_train,seed_echantillon,n_signalees,interpretation
+IsolationForest_contamination_auto,17904,3000,42,391,"Atypie relative à cet échantillon, à examiner."
+LOF_20_voisins_contamination_auto,17904,3000,42,58,"Atypie relative à cet échantillon, à examiner."
+KNN_seuil_quantile_95_exploratoire,17904,3000,42,150,"Atypie relative à cet échantillon, à examiner."

@@ -1,0 +1,15 @@
+﻿variable,nombre_NaN,proportion_NaN
+id_observation,0,0.0
+lat_c,0,0.0
+lon_c,0,0.0
+acq_date,0,0.0
+feu,0,0.0
+mois,0,0.0
+jour_annee,0,0.0
+date,0,0.0
+temperature_2m_max,0,0.0
+precipitation_sum,0,0.0
+wind_speed_10m_max,0,0.0
+humidite_moy,0,0.0
+lat_grille,0,0.0
+lon_grille,0,0.0
